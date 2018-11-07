@@ -2,11 +2,11 @@ package scheduler;
 
 import java.util.concurrent.ScheduledExecutorService;
 
-public class SchedulerMonitor {
+public class SchedulerMoniteur {
 	
 	private ScheduledExecutorService scheduler;
 	
-	public SchedulerMonitor() {
+	public SchedulerMoniteur() {
 		// on instancie
 	}
 	
