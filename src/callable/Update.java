@@ -2,19 +2,19 @@ package callable;
 
 import java.util.concurrent.Callable;
 
-import client.Afficheur;
+import client.ObsCapteur;
 
 public class Update implements Callable {
 
-	private Afficheur a;
+	private ObsCapteur obs;
 	
-	public Update(Afficheur a) {
-		this.a = a;
+	public Update(ObsCapteur obs) {
+		this.obs = obs;
 	}
 	
 	@Override
 	public Object call() throws Exception {
-		// TODO Auto-generated method stub
+		obs.update(null);
 		return null;
 	}
 
