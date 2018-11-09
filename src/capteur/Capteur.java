@@ -1,5 +1,6 @@
 package capteur;
 
+import client.ObsCapteur;
 import diffusion.Diffusion;
 
 public class Capteur extends Thread implements CapteurMoniteur {
@@ -22,7 +23,8 @@ public class Capteur extends Thread implements CapteurMoniteur {
 	}
 
 	@Override
-	public synchronized Integer getValue() {
+	public synchronized Integer getValue(ObsCapteur obs) {
+		// TODO : Sauvegarder les références des obs capteurs dans un Set dans la diffusion séquentielle
 		return compteur;
 	}
 }

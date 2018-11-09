@@ -12,7 +12,7 @@ public class Afficheur extends Thread implements ObsCapteur {
 	
 	@Override
 	public void update(Capteur c) {
-		Future f = canal.getValue();
+		Future<Integer> f = canal.getValue();
 		try {
 			Integer i = (Integer) f.get();
 		} catch (InterruptedException | ExecutionException e) {

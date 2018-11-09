@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 
 import client.ObsCapteur;
 
-public class Update implements Callable {
+public class Update implements Callable<Object> {
 
 	private ObsCapteur obs;
 	

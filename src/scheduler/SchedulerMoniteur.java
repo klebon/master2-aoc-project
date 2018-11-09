@@ -1,6 +1,9 @@
 package scheduler;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SchedulerMoniteur {
 	
@@ -10,8 +13,12 @@ public class SchedulerMoniteur {
 		// on instancie
 	}
 	
-	public synchronized void schedule() {
-		// prend les mêmes param que le scheduler
+	public synchronized Future<Integer> scheduleGetValue(Callable<Integer> c, Long delay, TimeUnit time) {
+		return scheduler.schedule(c, delay, time);
+	}
+	
+	public synchronized Future<Object> scheduleUpdate(Callable<Object> c, Long delay, TimeUnit time) {
+		return scheduler.schedule(c, delay, time);
 	}
 
 }
