@@ -4,7 +4,7 @@ import java.util.concurrent.Future;
 
 import capteur.Capteur;
 
-public interface CanalProxy {
+public interface ObsCapteurAsync {
 	
 	public Future update(Capteur c);
 
