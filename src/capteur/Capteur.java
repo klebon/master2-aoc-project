@@ -17,12 +17,12 @@ public class Capteur extends Thread implements CapteurMoniteur {
 		
 		while(true) {
 			compteur++;
-			
+			diffusion.execute(this);
 		}
 	}
 
 	@Override
-	public synchronized Integer getCompteur() {
+	public synchronized Integer getValue() {
 		return compteur;
 	}
 }

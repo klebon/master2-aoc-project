@@ -11,7 +11,7 @@ public class DiffusionAtomique implements Diffusion {
 	
 	@Override
 	public Future execute(Capteur c) {
-		list.add(c.getCompteur());
+		list.add(c.getValue());
 		return null;
 	}
 	
