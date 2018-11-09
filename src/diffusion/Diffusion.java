@@ -8,4 +8,5 @@ public interface Diffusion {
 	
 	public Future execute(Capteur c);
 
+
 }
