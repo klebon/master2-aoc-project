@@ -4,13 +4,14 @@ import java.util.concurrent.Future;
 
 import capteur.Capteur;
 import client.Afficheur;
+import client.ObsCapteur;
 
 public class Canal implements ObsCapteurAsync, CapteurAsync {
 	
-	private Afficheur a;
+	private ObsCapteur obs;
 	
-	public Canal(Afficheur a) {
-		this.a = a;
+	public Canal(ObsCapteur obs) {
+		this.obs = obs;
 	}
 
 	@Override

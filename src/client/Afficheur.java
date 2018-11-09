@@ -1,13 +1,23 @@
 package client;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import canal.CapteurAsync;
 import capteur.Capteur;
 
-public class Afficheur implements ObsCapteur {
-
+public class Afficheur extends Thread implements ObsCapteur {
+	
+	private CapteurAsync canal;
+	
 	@Override
 	public void update(Capteur c) {
-		// TODO Auto-generated method stub
-		
+		Future f = canal.getValue();
+		try {
+			Integer i = (Integer) f.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
 	}
 
 	
