@@ -6,32 +6,61 @@ import java.util.concurrent.TimeUnit;
 
 import callable.GetValue;
 import callable.Update;
-import capteur.Capteur;
-import capteur.CapteurMoniteur;
-import client.ObsCapteur;
-import scheduler.SchedulerMoniteur;
+import capteur.CaptorMonitor;
+import client.ObsCaptor;
+import scheduler.SchedulerMonitor;
 
-public class Canal implements ObsCapteurAsync, CapteurAsync {
+/**
+ * Canal is implementing all proxy interfaces. It is managing all interactions with the scheduler and the creation
+ * of callables. 
+ * @author jgarnier
+ */
+public class Canal implements ObsCaptorAsync, CaptorAsync {
 	
-	private CapteurMoniteur capteur;
-	private ObsCapteur obs;
-	private SchedulerMoniteur scheduler;
+	/**
+	 * The captor monitor which contains the current state
+	 */
+	private CaptorMonitor captor;
 	
-	public Canal(CapteurMoniteur capteur, ObsCapteur obs, SchedulerMoniteur scheduler) {
-		this.capteur = capteur;
+	/**
+	 * The captor monitor observer that update callable will notify  
+	 */
+	private ObsCaptor obs;
+	
+	/**
+	 * Scheduler which will manage callables that the canal creates.
+	 */
+	private SchedulerMonitor scheduler;
+	
+	/**
+	 * Simple constructor mapping the references to attributes.
+	 * @param captor
+	 * @param obs
+	 * @param scheduler
+	 */
+	public Canal(CaptorMonitor captor, ObsCaptor obs, SchedulerMonitor scheduler) {
+		this.captor = captor;
 		this.obs = obs;
 		this.scheduler = scheduler;
 	}
 
+	
+	// FIXME: Retirer la référence CaptorMonitor c.
+	/**
+	 * update creates the update callable and call on scheduler scheduleUpdate to return a future to caller
+	 */
 	@Override
-	public Future<Object> update(Capteur c) {
+	public Future<Object> update(CaptorMonitor c) {
 		Callable<Object> update = new Update(obs);
 		return scheduler.scheduleUpdate(update, 500L, TimeUnit.MILLISECONDS);
 	}
 
+	/**
+	 * getValue creates the getValue callable and call on scheduler scheduleUpdate to return a future to caller
+	 */
 	@Override
 	public Future<Integer> getValue() {
-		Callable<Integer> gv = new GetValue(capteur, obs);
+		Callable<Integer> gv = new GetValue(captor, obs);
 		return scheduler.scheduleGetValue(gv, 500L, TimeUnit.MILLISECONDS);
 	}
 

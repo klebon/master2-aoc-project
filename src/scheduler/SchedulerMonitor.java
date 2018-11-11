@@ -1,16 +1,17 @@
 package scheduler;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class SchedulerMoniteur {
+public class SchedulerMonitor {
 	
-	private ScheduledExecutorService scheduler;
+	private final ScheduledExecutorService scheduler;
 	
-	public SchedulerMoniteur() {
-		// on instancie
+	public SchedulerMonitor() {
+		this.scheduler = Executors.newScheduledThreadPool(1);
 	}
 	
 	public synchronized Future<Integer> scheduleGetValue(Callable<Integer> c, Long delay, TimeUnit time) {
