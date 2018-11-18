@@ -1,10 +1,6 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import canal.Canal;
-import canal.ObsCaptorAsync;
 import capteur.CaptorMonitor;
 import capteur.CaptorThread;
 import client.DisplayMonitor;
@@ -29,28 +25,23 @@ public class Main {
 		DisplayMonitor a4 = new DisplayMonitor();
 
 		// Now the canal
-		Canal c1 = new Canal(c, a1, scheduler);
-		Canal c2 = new Canal(c, a2, scheduler);
-		Canal c3 = new Canal(c, a3, scheduler);
-		Canal c4 = new Canal(c, a4, scheduler);
+		Canal c1 = new Canal(c, scheduler); c1.attach(a1);
+		Canal c2 = new Canal(c, scheduler); c2.attach(a2);
+		Canal c3 = new Canal(c, scheduler); c3.attach(a3);
+		Canal c4 = new Canal(c, scheduler); c4.attach(a4);
 		
-		// Set the canal to afficheur
-		a1.setCanal(c1);
-		a2.setCanal(c2);
-		a3.setCanal(c3);
-		a4.setCanal(c4);
 		// Then add it to our list
-		List<ObsCaptorAsync> myObs = new ArrayList<ObsCaptorAsync>();
-		myObs.add(c1);
-		myObs.add(c2);
-		myObs.add(c3);
-		myObs.add(c4);
 		
 		// We can instantiate the diffusion now
-		Diffusion sequentialD = new SequentialDiffusion(myObs);
-		Diffusion atomicD = new AtomicDiffusion(myObs);
+		Diffusion sequentialD = new SequentialDiffusion();
+		Diffusion atomicD = new AtomicDiffusion();
+		
+		sequentialD.attach(c1); atomicD.attach(c1);
+		sequentialD.attach(c2); atomicD.attach(c2);
+		sequentialD.attach(c3); atomicD.attach(c3);
+		sequentialD.attach(c4); atomicD.attach(c4);
 		// Set it to our capteur
-		c.setDiffusion(sequentialD);
+		c.setDiffusion(atomicD);
 		
 		
 		// UI
@@ -60,11 +51,11 @@ public class Main {
 		ValueUI display3 = new ValueUI("DisplayMonitor");
 		ValueUI display4 = new ValueUI("DisplayMonitor");
 		
-		captorUI.setSujet(c); captorUI.showView();
-		display1.setSujet(a1); display1.showView();
-		display2.setSujet(a2); display2.showView();
-		display3.setSujet(a3); display3.showView();
-		display4.setSujet(a4); display4.showView();
+		c.attach(captorUI); captorUI.showView();
+		a1.attach(display1); display1.showView();
+		a2.attach(display2); display2.showView();
+		a3.attach(display3); display3.showView();
+		a4.attach(display4); display4.showView();
 		
 		// Manage threads
 		CaptorThread captorthread = new CaptorThread(c);
@@ -88,7 +79,6 @@ public class Main {
 		displayThread4.setDaemon(true);
 		displayThread4.start();
 	
-		while(true);
 	}
 
 }

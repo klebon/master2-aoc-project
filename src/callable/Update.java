@@ -2,7 +2,7 @@ package callable;
 
 import java.util.concurrent.Callable;
 
-import client.ObsCaptor;
+import canal.CaptorAsync;
 
 /**
  * Update is a callable used by CaptorMonitor in order to notify Displays that a new state was generated.
@@ -15,14 +15,14 @@ public class Update implements Callable<Object> {
 	/**
 	 * obs captor which will be noticed about the captor monitor update
 	 */
-	private ObsCaptor obs;
+	private CaptorAsync proxy;
 	
 	/**
 	 * A simple constructor mapping the reference to attribute.
-	 * @param obs
+	 * @param proxy
 	 */
-	public Update(ObsCaptor obs) {
-		this.obs = obs;
+	public Update(CaptorAsync proxy) {
+		this.proxy = proxy;
 	}
 	
 	/**
@@ -31,7 +31,7 @@ public class Update implements Callable<Object> {
 	 */
 	@Override
 	public Object call() throws Exception {
-		obs.update(null);
+		proxy.notifyObs();
 		return null;
 	}
 

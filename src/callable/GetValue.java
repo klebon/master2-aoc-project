@@ -1,8 +1,8 @@
 package callable;
 
 import java.util.concurrent.Callable;
+
 import capteur.CaptorMonitor;
-import client.ObsCaptor;
 
 /**
  * GetValue is a callable used by Display in order to get the new state of CaptorMonitor.
@@ -17,18 +17,12 @@ public class GetValue implements Callable<Integer> {
 	private CaptorMonitor c;
 	
 	/**
-	 * obs captor which created this callable
-	 */
-	private ObsCaptor obs;
-	
-	/**
 	 * A simple constructor mapping the references to attributes.
 	 * @param c
 	 * @param obs
 	 */
-	public GetValue(CaptorMonitor c, ObsCaptor obs) {
+	public GetValue(CaptorMonitor c) {
 		this.c = c;
-		this.obs = obs;
 	}
 
 	/**
@@ -37,7 +31,7 @@ public class GetValue implements Callable<Integer> {
 	 */
 	@Override
 	public Integer call() throws Exception {
-		return c.getValue(obs);
+		return c.getValue();
 	}
 
 }

@@ -1,9 +1,8 @@
 package client;
 
-import capteur.CaptorMonitor;
+import canal.CaptorAsync;
+import observer.Observer;
 
-public interface ObsCaptor {
-
-	public void update(CaptorMonitor c);
+public interface ObsCaptor extends Observer<CaptorAsync> {
 	
 }

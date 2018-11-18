@@ -1,5 +1,5 @@
 package observer;
 
-public interface Observer {
-	public void update();
+public interface Observer<T> {
+	public void update(T subject);
 }

@@ -11,12 +11,11 @@ import observer.Observer;
 import observer.Subject;
 
 // TODO: Commenter le code
-public class ValueUI extends JFrame implements Observer {
+public class ValueUI extends JFrame implements ObsMonitor {
 	
 	private static final long serialVersionUID = -1802883184608148357L;
 	private static int count = 1;
 	private JLabel value;
-	private Subject subject;
 	
 	public ValueUI(String title) {
 		this.value = new JLabel("...");
@@ -30,19 +29,14 @@ public class ValueUI extends JFrame implements Observer {
 		count++;
 	}
 	
-	public void setSujet(Subject s) {
-		this.subject = s;
-		s.attach(this);
-	}
-	
 	public void showView() {
 		this.pack();
 		this.setVisible(true);
 	}
 
 	@Override
-	public void update() {
-		value.setText(this.subject.getState().toString());
+	public void update(SubjectMonitor subject) {
+		value.setText(subject.getState().toString());		
 	}
 
 }

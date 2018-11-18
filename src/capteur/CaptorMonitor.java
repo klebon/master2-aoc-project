@@ -5,6 +5,8 @@ import java.util.List;
 
 import client.ObsCaptor;
 import diffusion.Diffusion;
+import ihm.ObsMonitor;
+import ihm.SubjectMonitor;
 import observer.Subject;
 import observer.Observer;
 
@@ -15,7 +17,7 @@ import observer.Observer;
  * current state has been modified and so UI needs to updated.
  * @author jgarnier
  */
-public class CaptorMonitor implements Subject {
+public class CaptorMonitor implements SubjectMonitor {
 	
 	/**
 	 * The current diffusion used to diffuse the captor state to canals
@@ -25,7 +27,7 @@ public class CaptorMonitor implements Subject {
 	/**
 	 * List of observers that CaptorMonitor have to update when its current state is modified
 	 */
-	private List<Observer> observers;
+	private List<ObsMonitor> observers;
 	
 	/**
 	 * Its current state
@@ -53,8 +55,8 @@ public class CaptorMonitor implements Subject {
 	 * @param obs : obs reference asking for the value
 	 * @return the state according to the current diffusion
 	 */
-	public synchronized Integer getValue(ObsCaptor obs) {
-		return diffusion.getValue(obs);
+	public synchronized Integer getValue() {
+		return diffusion.getValue();
 	}
 
 	/**
@@ -80,7 +82,7 @@ public class CaptorMonitor implements Subject {
 	 * @param o : observer which needs to be notified
 	 */
 	@Override
-	public void attach(Observer o) {
+	public void attach(ObsMonitor o) {
 		observers.add(o);		
 	}
 
@@ -89,7 +91,7 @@ public class CaptorMonitor implements Subject {
 	 * @param o : observer which doesn't need anymore to be notified
 	 */
 	@Override
-	public void detach(Observer o) {
+	public void detach(ObsMonitor o) {
 		observers.remove(o);		
 	}
 
@@ -98,8 +100,7 @@ public class CaptorMonitor implements Subject {
 	 */
 	@Override
 	public void notifyObs() {
-		for(Observer o : observers)
-			o.update();
+		for(ObsMonitor o : observers)
+			o.update(this);
 	}
-	
 }

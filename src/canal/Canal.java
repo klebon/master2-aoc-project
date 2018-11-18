@@ -1,5 +1,7 @@
 package canal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -8,6 +10,7 @@ import callable.GetValue;
 import callable.Update;
 import capteur.CaptorMonitor;
 import client.ObsCaptor;
+import diffusion.Diffusion;
 import scheduler.SchedulerMonitor;
 
 /**
@@ -25,7 +28,7 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	/**
 	 * The captor monitor observer that update callable will notify  
 	 */
-	private ObsCaptor obs;
+	private List<ObsCaptor> observers;
 	
 	/**
 	 * Scheduler which will manage callables that the canal creates.
@@ -38,10 +41,10 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	 * @param obs
 	 * @param scheduler
 	 */
-	public Canal(CaptorMonitor captor, ObsCaptor obs, SchedulerMonitor scheduler) {
+	public Canal(CaptorMonitor captor, SchedulerMonitor scheduler) {
 		this.captor = captor;
-		this.obs = obs;
 		this.scheduler = scheduler;
+		this.observers = new ArrayList<>();
 	}
 
 	
@@ -51,7 +54,7 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	 */
 	@Override
 	public Future<Object> update(CaptorMonitor c) {
-		Callable<Object> update = new Update(obs);
+		Callable<Object> update = new Update(this);
 		return scheduler.scheduleUpdate(update, 500L, TimeUnit.MILLISECONDS);
 	}
 
@@ -60,8 +63,32 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	 */
 	@Override
 	public Future<Integer> getValue() {
-		Callable<Integer> gv = new GetValue(captor, obs);
-		return scheduler.scheduleGetValue(gv, 500L, TimeUnit.MILLISECONDS);
+		Callable<Integer> gv = new GetValue(captor);
+		return scheduler.scheduleGetValue(gv, 300L, TimeUnit.MILLISECONDS);
+	}
+
+
+	@Override
+	public void attach(ObsCaptor o) {
+		this.observers.add(o);
+	}
+
+
+	@Override
+	public void detach(ObsCaptor o) {
+		this.observers.remove(o);
+	}
+
+	@Override
+	public void notifyObs() {
+		for(ObsCaptor o : observers)
+			o.update(this);
+	}
+
+
+	@Override
+	public void update(Diffusion subject) {
+	
 	}
 
 }

@@ -6,6 +6,8 @@ import java.util.concurrent.Future;
 
 import canal.CaptorAsync;
 import capteur.CaptorMonitor;
+import ihm.ObsMonitor;
+import ihm.SubjectMonitor;
 import observer.Observer;
 import observer.Subject;
 
@@ -15,21 +17,11 @@ import observer.Subject;
  * @author jgarnier
  *
  */
-public class DisplayMonitor implements ObsCaptor, Subject {
+public class DisplayMonitor implements ObsCaptor, SubjectMonitor {
 	
-	private List<Observer> observers = new ArrayList<>();
-	private CaptorAsync canal;
-	private Integer value;
+	private List<ObsMonitor> observers = new ArrayList<>();
 	private Future<Integer> f;
-	
-	@Override
-	public synchronized void update(CaptorMonitor c) {
-		this.f = canal.getValue();
-	}
-
-	public synchronized void setCanal(CaptorAsync canal) {
-		this.canal = canal;
-	}
+	private Integer value;
 
 	public synchronized Future<Integer> getF() {
 		return f;
@@ -45,24 +37,31 @@ public class DisplayMonitor implements ObsCaptor, Subject {
 	}
 
 	@Override
-	public void attach(Observer o) {
-		observers.add(o);
-	}
-
-	@Override
-	public void detach(Observer o) {
-		observers.remove(o);
-	}
-
-	@Override
-	public void notifyObs() {
-		for(Observer o : observers)
-			o.update();
-	}
-
-	@Override
 	public synchronized Integer getState() {
 		return this.value;
+	}
+
+	// SUBJECT METHODS 
+	
+	@Override
+	public synchronized void attach(ObsMonitor o) {
+		this.observers.add(o);
+	}
+
+	@Override
+	public synchronized void detach(ObsMonitor o) {
+		this.observers.remove(o);
+	}
+	
+	@Override
+	public synchronized void notifyObs() {
+		for(ObsMonitor o : observers)
+			o.update(this);
+	}
+
+	@Override
+	public synchronized void update(CaptorAsync subject) {
+		this.f = subject.getValue();				
 	}
 	
 }

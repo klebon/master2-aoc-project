@@ -1,5 +1,6 @@
 package diffusion;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,35 +18,30 @@ import client.ObsCaptor;
 public class SequentialDiffusion implements Diffusion {
 
 	/**
-	 * lock is a boolean value used to enable or disable the process to send update to canals.
+	 * lock is a boolean value used to enable or disable the process to send update to observers.
 	 */
 	private boolean lock;
 	
 	/**
-	 * currentState is the state that we are going to send or already sent to canals.
+	 * currentState is the state that we are going to send or already sent to observers.
 	 */
 	private Integer currentState;
 	
 	/**
-	 * callers is a set used to know how many ObsCaptor have requested the current state of the diffusion. It allows
-	 * the diffusion to send a new value as soon as all ObsCaptor have received the last value.
+	 * observers is a list of ObsCaptorAsync through AtomicDiffusion send update callables.
 	 */
-	private Set<ObsCaptor> callers;
+	private List<ObsCaptorAsync> observers;
+	
+	private int count;
 	
 	/**
-	 * canals is a list of ObsCaptorAsync through AtomicDiffusion send update callables.
-	 */
-	private List<ObsCaptorAsync> canals;
-	
-	/**
-	 * SequentialDiffusion only needs to know all canals in order to send update callables.
+	 * SequentialDiffusion only needs to know all observers in order to send update callables.
 	 * Alternatively, it initializes all values such as lock to false or currentState to 0.
-	 * @param canals : list of canals connected to displays
+	 * @param observers : list of observers connected to displays
 	 */
-	public SequentialDiffusion(List<ObsCaptorAsync> canaux) {
+	public SequentialDiffusion() {
 		this.lock = false;
-		this.canals = canaux;
-		this.callers = new HashSet<ObsCaptor>();
+		this.observers = new ArrayList<>();
 		this.currentState = 0;
 	}
 	
@@ -58,16 +54,16 @@ public class SequentialDiffusion implements Diffusion {
 	public void execute(CaptorMonitor c) {
 		// One canal is associated to one ObsCaptor so if both are equal it means that each ObsCaptor has received
 		// the current value so we can clear the Set
-		if(callers.size() == canals.size()) {
+		if(count == observers.size()) {
 			lock = false;
-			callers.clear();
 		}
 		// In order to set a new value and call update to each Canal again
-		if(callers.isEmpty() && !lock) {
+		if(!lock) {
 			lock = true;
+			count = 0;
 			currentState = c.getState();
-			for(ObsCaptorAsync canal : canals)
-				canal.update(c);
+			for(ObsCaptorAsync o : observers)
+				o.update(c);
 		}
 	}
 
@@ -78,11 +74,24 @@ public class SequentialDiffusion implements Diffusion {
 	 * @return currentState
 	 */
 	@Override
-	public Integer getValue(ObsCaptor obs) {
+	public Integer getValue() {
 		// We add obs in our set because our set will protect us to one ObsCaptor calling several times getValue 
-		callers.add(obs);
+		count++;
 		return currentState;
 	}
+
+	@Override
+	public void attach(ObsCaptorAsync o) {
+		this.observers.add(o);
+	}
+
+	@Override
+	public void detach(ObsCaptorAsync o) {
+		this.observers.remove(o);
+	}
+
+	@Override
+	public void notifyObs() {}
 	
 
 }
