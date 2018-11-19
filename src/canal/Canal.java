@@ -8,15 +8,16 @@ import java.util.concurrent.TimeUnit;
 
 import callable.GetValue;
 import callable.Update;
-import capteur.CaptorMonitor;
-import client.ObsCaptor;
+import canal.observer.CaptorAsync;
+import canal.observer.ObsCaptorAsync;
+import captor.CaptorMonitor;
+import client.observer.ObsCaptor;
 import diffusion.Diffusion;
 import scheduler.SchedulerMonitor;
 
 /**
  * Canal is implementing all proxy interfaces. It is managing all interactions with the scheduler and the creation
  * of callables. 
- * @author jgarnier
  */
 public class Canal implements ObsCaptorAsync, CaptorAsync {
 	
@@ -26,7 +27,7 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	private CaptorMonitor captor;
 	
 	/**
-	 * The captor monitor observer that update callable will notify  
+	 * List of observers
 	 */
 	private List<ObsCaptor> observers;
 	
@@ -38,7 +39,6 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	/**
 	 * Simple constructor mapping the references to attributes.
 	 * @param captor
-	 * @param obs
 	 * @param scheduler
 	 */
 	public Canal(CaptorMonitor captor, SchedulerMonitor scheduler) {
@@ -47,15 +47,13 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 		this.observers = new ArrayList<>();
 	}
 
-	
-	// FIXME: Retirer la référence CaptorMonitor c.
 	/**
 	 * update creates the update callable and call on scheduler scheduleUpdate to return a future to caller
 	 */
 	@Override
 	public Future<Object> update(CaptorMonitor c) {
 		Callable<Object> update = new Update(this);
-		return scheduler.scheduleUpdate(update, 500L, TimeUnit.MILLISECONDS);
+		return scheduler.scheduleUpdate(update, 500L * (long) Math.random() + 500L, TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -64,28 +62,37 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	@Override
 	public Future<Integer> getValue() {
 		Callable<Integer> gv = new GetValue(captor);
-		return scheduler.scheduleGetValue(gv, 300L, TimeUnit.MILLISECONDS);
+		return scheduler.scheduleGetValue(gv, 500L * (long) Math.random() + 500L, TimeUnit.MILLISECONDS);
 	}
 
-
+	/**
+	 * Attach an ObsCaptor observer to the subject
+	 */
 	@Override
 	public void attach(ObsCaptor o) {
 		this.observers.add(o);
 	}
 
-
+	/**
+	 * Detach an ObsCaptor observer of the subject
+	 */
 	@Override
 	public void detach(ObsCaptor o) {
 		this.observers.remove(o);
 	}
 
+	/**
+	 * Notify all observers
+	 */
 	@Override
 	public void notifyObs() {
 		for(ObsCaptor o : observers)
 			o.update(this);
 	}
 
-
+	/**
+	 * Useless in our case because we use a custom update returning a Future.
+	 */
 	@Override
 	public void update(Diffusion subject) {
 	

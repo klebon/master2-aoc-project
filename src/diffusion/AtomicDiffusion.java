@@ -2,20 +2,16 @@ package diffusion;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 
-import canal.ObsCaptorAsync;
-import capteur.CaptorMonitor;
-import client.ObsCaptor;
+import canal.observer.ObsCaptorAsync;
+import captor.CaptorMonitor;
 
 /**
  * AtomicDiffusion sends all of captor state stored in a queue to each canal. It never sends a new captor state until all of 
  * observers would receive the last state. It inherits from Diffusion for the Strategy pattern. CaptorMonitor calls whatever
  * the diffusion execute method to update UI.
- * @author jgarnier
  */
 public class AtomicDiffusion implements Diffusion {
 

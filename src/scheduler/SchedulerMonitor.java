@@ -6,6 +6,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * TODO: Commenter le code
+ */
 public class SchedulerMonitor {
 	
 	private final ScheduledExecutorService scheduler;

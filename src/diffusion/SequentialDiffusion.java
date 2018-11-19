@@ -1,19 +1,15 @@
 package diffusion;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import canal.ObsCaptorAsync;
-import capteur.CaptorMonitor;
-import client.ObsCaptor;
+import canal.observer.ObsCaptorAsync;
+import captor.CaptorMonitor;
 
 /**
  * SequentialDiffusion sends one state captor only when all displays have received the last one. 
  * The result is a sublist of captor states. It inherits from Diffusion for the Strategy pattern. 
  * CaptorMonitor calls whatever the diffusion execute method to update UI.
- * @author jgarnier
  */
 public class SequentialDiffusion implements Diffusion {
 

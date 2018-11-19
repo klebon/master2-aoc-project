@@ -1,21 +1,17 @@
-package capteur;
+package captor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import client.ObsCaptor;
 import diffusion.Diffusion;
-import ihm.ObsMonitor;
-import ihm.SubjectMonitor;
-import observer.Subject;
-import observer.Observer;
+import ihm.observer.ObsMonitor;
+import ihm.observer.SubjectMonitor;
 
 /**
  * CaptorMonitor encapsulates the captor state and offers methods to get it or modify it.
  * Those methods are synchronized for thread safety.
  * CaptorMonitor implements also Subject interface in order to notify UI that its 
  * current state has been modified and so UI needs to updated.
- * @author jgarnier
  */
 public class CaptorMonitor implements SubjectMonitor {
 	
@@ -25,7 +21,7 @@ public class CaptorMonitor implements SubjectMonitor {
 	private Diffusion diffusion;
 	
 	/**
-	 * List of observers that CaptorMonitor have to update when its current state is modified
+	 * List of UI observers that CaptorMonitor have to update when its current state is modified
 	 */
 	private List<ObsMonitor> observers;
 	

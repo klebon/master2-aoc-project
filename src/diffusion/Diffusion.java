@@ -1,13 +1,11 @@
 package diffusion;
 
-import canal.ObsCaptorAsync;
-import capteur.CaptorMonitor;
-import client.ObsCaptor;
+import canal.observer.ObsCaptorAsync;
+import captor.CaptorMonitor;
 import observer.Subject;
 
 /**
  * Diffusion is the strategy interface of diffusion algorithm.
- * @author jgarnier
  */
 public interface Diffusion extends Subject<ObsCaptorAsync> {
 	

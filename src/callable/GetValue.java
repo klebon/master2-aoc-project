@@ -2,12 +2,11 @@ package callable;
 
 import java.util.concurrent.Callable;
 
-import capteur.CaptorMonitor;
+import captor.CaptorMonitor;
 
 /**
  * GetValue is a callable used by Display in order to get the new state of CaptorMonitor.
  * So it inherits from Callable and returns an Integer.
- * @author jgarnier
  */
 public class GetValue implements Callable<Integer> {
 	
@@ -19,14 +18,13 @@ public class GetValue implements Callable<Integer> {
 	/**
 	 * A simple constructor mapping the references to attributes.
 	 * @param c
-	 * @param obs
 	 */
 	public GetValue(CaptorMonitor c) {
 		this.c = c;
 	}
 
 	/**
-	 * call is a method inherited which will be called by the scheduler. It will return the state of CaptorMonitor
+	 * call is a method inherited which will be called by the scheduler. It will return the value of CaptorMonitor
 	 * according to its diffusion. 
 	 */
 	@Override

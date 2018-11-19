@@ -4,25 +4,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import canal.CaptorAsync;
-import capteur.CaptorMonitor;
-import ihm.ObsMonitor;
-import ihm.SubjectMonitor;
-import observer.Observer;
-import observer.Subject;
+import canal.observer.CaptorAsync;
+import client.observer.ObsCaptor;
+import ihm.observer.ObsMonitor;
+import ihm.observer.SubjectMonitor;
 
-//TODO: Commenter le code
 /**
- * 
- * @author jgarnier
- *
+ * DisplayMonitor encapsulates the monitor state and offers methods to get it or modify it.
+ * Those methods are synchronized for thread safety.
+ * DisplayMonitor implements also Subject interface in order to notify UI that its 
+ * current state has been modified and so UI needs to updated.
+ * DisplayMonitor implements also ObsCaptor, an Observer of CaptorAsync, to be notified by CaptorAsync
+ * of all captor changes.
  */
 public class DisplayMonitor implements ObsCaptor, SubjectMonitor {
 	
+	/**
+	 * List of ObsMonitor observers that show the current value of the DisplayMonitor
+	 */
 	private List<ObsMonitor> observers = new ArrayList<>();
+	
+	/**
+	 * The reference of the Future got from getValue()
+	 */
 	private Future<Integer> f;
+	
+	/**
+	 * The current value of DisplayMonitor
+	 */
 	private Integer value;
 
+	
 	public synchronized Future<Integer> getF() {
 		return f;
 	}
@@ -31,18 +43,23 @@ public class DisplayMonitor implements ObsCaptor, SubjectMonitor {
 		this.f = f;
 	}
 	
+	/**
+	 * Set a new value to our DisplayMonitor and notify all observers that its state changed
+	 * @param i 
+	 */
 	public synchronized void setValue(Integer i) {
 		this.value = i;
 		notifyObs();
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public synchronized Integer getState() {
 		return this.value;
 	}
 
-	// SUBJECT METHODS 
-	
 	@Override
 	public synchronized void attach(ObsMonitor o) {
 		this.observers.add(o);

@@ -7,8 +7,8 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import observer.Observer;
-import observer.Subject;
+import ihm.observer.ObsMonitor;
+import ihm.observer.SubjectMonitor;
 
 // TODO: Commenter le code
 public class ValueUI extends JFrame implements ObsMonitor {

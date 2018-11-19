@@ -1,13 +1,12 @@
-package canal;
+package canal.observer;
 
 import java.util.concurrent.Future;
 
-import client.ObsCaptor;
+import client.observer.ObsCaptor;
 import observer.Subject;
 
 /**
  * CaptorAsync is an interface used as proxy for Displays.
- * @author jgarnier
  */
 public interface CaptorAsync extends Subject<ObsCaptor> {
 

@@ -1,14 +1,13 @@
-package canal;
+package canal.observer;
 
 import java.util.concurrent.Future;
 
-import capteur.CaptorMonitor;
+import captor.CaptorMonitor;
 import diffusion.Diffusion;
 import observer.Observer;
 
 /**
  * ObsCaptorAsync is an interface used as proxy for CaptorMonitor and Diffusion.
- * @author jgarnier
  */
 public interface ObsCaptorAsync extends Observer<Diffusion> {
 	

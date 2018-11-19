@@ -1,8 +1,8 @@
 package main;
 
 import canal.Canal;
-import capteur.CaptorMonitor;
-import capteur.CaptorThread;
+import captor.CaptorMonitor;
+import captor.CaptorThread;
 import client.DisplayMonitor;
 import client.DisplayThread;
 import diffusion.AtomicDiffusion;
@@ -40,8 +40,11 @@ public class Main {
 		sequentialD.attach(c2); atomicD.attach(c2);
 		sequentialD.attach(c3); atomicD.attach(c3);
 		sequentialD.attach(c4); atomicD.attach(c4);
-		// Set it to our capteur
-		c.setDiffusion(atomicD);
+		if(args[0].equals("Atomique")) {
+			c.setDiffusion(atomicD);
+		} else {
+			c.setDiffusion(sequentialD);
+		}
 		
 		
 		// UI

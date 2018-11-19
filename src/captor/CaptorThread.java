@@ -1,9 +1,8 @@
-package capteur;
+package captor;
 
 /**
  * CaptorThread is the captor's behavior. It inherits from Thread because it will update the captor state 
  * independently the main thread such as a real captor measuring new value each second.
- * @author jgarnier
  */
 public class CaptorThread extends Thread {
 	
