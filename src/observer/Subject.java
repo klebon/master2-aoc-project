@@ -1,7 +1,7 @@
 package observer;
 
 /**
- * TODO: Commenter le code
+ * Subject template
  */
 public interface Subject<T> {
 	public void attach(T o);

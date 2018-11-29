@@ -1,7 +1,7 @@
 package observer;
 
 /**
- * TODO: Commenter le code
+ * Observer template
  */
 public interface Observer<T> {
 	public void update(T subject);

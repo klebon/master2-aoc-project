@@ -52,9 +52,6 @@ public class DisplayMonitor implements ObsCaptor, SubjectMonitor {
 		notifyObs();
 	}
 
-	/**
-	 * 
-	 */
 	@Override
 	public synchronized Integer getState() {
 		return this.value;

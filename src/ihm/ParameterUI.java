@@ -11,7 +11,9 @@ import javax.swing.JFrame;
 
 import main.Main;
 
-// TODO: Commenter le code
+/**
+ * ParameterUI is a IHM managing diffusion choice
+ */
 public class ParameterUI extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 456467879876511L;
@@ -19,6 +21,9 @@ public class ParameterUI extends JFrame implements ActionListener {
 	private JButton validation;
 	private JComboBox<String> choice;
 
+	/**
+	 * Constructor setting all the JFrame
+	 */
 	public ParameterUI() {
 		String[] diffusionString = { "Atomique", "Séquentielle"/*, "Période"*/};
 		this.choice = new JComboBox<String>(diffusionString);
@@ -34,6 +39,9 @@ public class ParameterUI extends JFrame implements ActionListener {
 		this.getContentPane().add(validation, BorderLayout.PAGE_END);
 	}
 
+	/**
+	 * Function called when validation is pressed
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String result = (String) this.choice.getSelectedItem();
@@ -41,11 +49,17 @@ public class ParameterUI extends JFrame implements ActionListener {
 		Main.main(arguments);
 	}
 	
+	/**
+	 * Function called in order to show views
+	 */
 	public void showView() {
 		this.pack();
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Main
+	 */
 	public static void main(String[] args) {
 		ParameterUI parameter = new ParameterUI();
 		parameter.showView();

@@ -4,6 +4,6 @@ import canal.observer.CaptorAsync;
 import observer.Observer;
 
 /**
- * TODO: Commenter le code
+ * ObsCaptor is used by DisplayMonitor and is monitoring CaptorAsync (proxy)  
  */
 public interface ObsCaptor extends Observer<CaptorAsync> {}

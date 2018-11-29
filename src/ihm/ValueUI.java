@@ -10,13 +10,19 @@ import javax.swing.JLabel;
 import ihm.observer.ObsMonitor;
 import ihm.observer.SubjectMonitor;
 
-// TODO: Commenter le code
+/**
+ * ValueUI is a IHM showing DisplayMonitor value
+ */
 public class ValueUI extends JFrame implements ObsMonitor {
 	
 	private static final long serialVersionUID = -1802883184608148357L;
 	private static int count = 1;
 	private JLabel value;
 	
+	/**
+	 * Constructor setting all the JFrame
+	 * @param title is the title shown in the toolbar of the JFrame
+	 */
 	public ValueUI(String title) {
 		this.value = new JLabel("...");
 		this.value.setFont(new Font("Serif", Font.PLAIN, 30));
@@ -29,11 +35,18 @@ public class ValueUI extends JFrame implements ObsMonitor {
 		count++;
 	}
 	
+	/**
+	 * Function called in order to show views
+	 */
 	public void showView() {
 		this.pack();
 		this.setVisible(true);
 	}
 
+	/**
+	 * Update the showing value of the IHM according to the state of subject
+	 * @param subject
+	 */
 	@Override
 	public void update(SubjectMonitor subject) {
 		value.setText(subject.getState().toString());		
