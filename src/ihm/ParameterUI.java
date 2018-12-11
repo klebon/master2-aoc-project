@@ -25,7 +25,7 @@ public class ParameterUI extends JFrame implements ActionListener {
 	 * Constructor setting all the JFrame
 	 */
 	public ParameterUI() {
-		String[] diffusionString = { "Atomique", "Séquentielle"/*, "Période"*/};
+		String[] diffusionString = { "Atomique", "Séquentielle", "Version"};
 		this.choice = new JComboBox<String>(diffusionString);
 		this.choice.setSelectedIndex(0);
 		

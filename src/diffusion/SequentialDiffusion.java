@@ -1,10 +1,14 @@
-package diffusion;
+ package diffusion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import canal.observer.ObsCaptorAsync;
-import captor.CaptorMonitor;
+import captor.impl.CaptorMonitor;
+import captor.memento.CaptorOriginator;
+import captor.memento.CaptorState;
 
 /**
  * SequentialDiffusion sends one state captor only when all displays have received the last one. 
@@ -17,11 +21,6 @@ public class SequentialDiffusion implements Diffusion {
 	 * lock is a boolean value used to enable or disable the process to send update to observers.
 	 */
 	private boolean lock;
-	
-	/**
-	 * currentState is the state that we are going to send or already sent to observers.
-	 */
-	private Integer currentState;
 	
 	/**
 	 * observers is a list of ObsCaptorAsync through AtomicDiffusion send update callables.
@@ -38,7 +37,6 @@ public class SequentialDiffusion implements Diffusion {
 	public SequentialDiffusion() {
 		this.lock = false;
 		this.observers = new ArrayList<>();
-		this.currentState = 0;
 	}
 	
 	/**
@@ -47,7 +45,7 @@ public class SequentialDiffusion implements Diffusion {
 	 * @param c : c is the ref of captor monitor which has updated its state 
 	 */
 	@Override
-	public void execute(CaptorMonitor c) {
+	public synchronized void execute(CaptorOriginator originator) {
 		// One canal is associated to one ObsCaptor so if both are equal it means that each ObsCaptor has received
 		// the current value so we can clear the Set
 		if(count == observers.size()) {
@@ -57,9 +55,25 @@ public class SequentialDiffusion implements Diffusion {
 		if(!lock) {
 			lock = true;
 			count = 0;
-			currentState = c.getState();
-			for(ObsCaptorAsync o : observers)
-				o.update(c);
+			CaptorState state = originator.createMemento();
+			for(ObsCaptorAsync o : observers) {
+				CaptorOriginator captor = new CaptorMonitor();
+				captor.restoreMemento(state);
+				Future<Void> f = o.update(captor);
+				Thread t = new Thread() {
+				    public void run() {
+				    	try {
+							f.get();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						} catch (ExecutionException e) {
+							e.printStackTrace();
+						}
+				    	count++;
+				    }
+				};
+				t.start();
+			}
 		}
 	}
 
@@ -69,12 +83,6 @@ public class SequentialDiffusion implements Diffusion {
 	 * @param obs : obs asking for the available state.
 	 * @return currentState
 	 */
-	@Override
-	public Integer getValue() {
-		// We add obs in our set because our set will protect us to one ObsCaptor calling several times getValue 
-		count++;
-		return currentState;
-	}
 
 	@Override
 	public void attach(ObsCaptorAsync o) {
@@ -88,6 +96,5 @@ public class SequentialDiffusion implements Diffusion {
 
 	@Override
 	public void notifyObs() {}
-	
 
 }

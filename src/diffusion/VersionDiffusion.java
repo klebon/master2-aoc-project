@@ -1,35 +1,23 @@
 package diffusion;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import canal.observer.ObsCaptorAsync;
 import captor.impl.CaptorMonitor;
 import captor.memento.CaptorOriginator;
 import captor.memento.CaptorState;
 
-/**
- * AtomicDiffusion sends all of captor state stored in a queue to each canal. It never sends a new captor state until all of 
- * observers would receive the last state. It inherits from Diffusion for the Strategy pattern. CaptorMonitor calls whatever
- * the diffusion execute method to update UI.
- */
-public class AtomicDiffusion implements Diffusion {
+public class VersionDiffusion implements Diffusion {
 	
-	/**
-	 * observers is a list of ObsCaptorAsync through AtomicDiffusion send update callables.
-	 */
 	private List<ObsCaptorAsync> observers;
-	
+		
 	/**
-	 * AtomicDiffusion only needs to know all observers in order to send update callables.
+	 * SequentialDiffusion only needs to know all observers in order to send update callables.
 	 * Alternatively, it initializes all values such as lock to false or currentState to 0.
 	 * @param observers : list of observers connected to displays
 	 */
-	public AtomicDiffusion() {
+	public VersionDiffusion() {
 		this.observers = new ArrayList<>();
 	}
 	
@@ -40,21 +28,21 @@ public class AtomicDiffusion implements Diffusion {
 	 */
 	@Override
 	public synchronized void execute(CaptorOriginator originator) {
-		CaptorState state = originator.createMemento();
-		// And we notice observers a new value is available
+		// In order to set a new value and call update to each Canal again
+		CaptorState cs = originator.createMemento();
 		for(ObsCaptorAsync o : observers) {
 			CaptorOriginator captor = new CaptorMonitor();
-			captor.restoreMemento(state);
-			Future<Void> f = o.update(captor);
-			try {
-				f.get();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
-		}	
+			captor.restoreMemento(cs);
+			o.update(captor);
+		}
 	}
+
+	/**
+	 * getValue returns the available state according to the diffusion.
+	 * It also keeps a track on obs in order to know if all ObsCapteurs have received the available state.
+	 * @param obs : obs asking for the available state.
+	 * @return currentState
+	 */
 
 	@Override
 	public void attach(ObsCaptorAsync o) {
@@ -63,10 +51,11 @@ public class AtomicDiffusion implements Diffusion {
 
 	@Override
 	public void detach(ObsCaptorAsync o) {
-		this.observers.add(o);
+		this.observers.remove(o);
 	}
 
 	@Override
 	public void notifyObs() {}
+
 	
 }

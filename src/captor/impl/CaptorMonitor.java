@@ -1,8 +1,10 @@
-package captor;
+package captor.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import captor.memento.CaptorOriginator;
+import captor.memento.CaptorState;
 import diffusion.Diffusion;
 import ihm.observer.ObsMonitor;
 import ihm.observer.SubjectMonitor;
@@ -13,7 +15,7 @@ import ihm.observer.SubjectMonitor;
  * CaptorMonitor implements also Subject interface in order to notify UI that its 
  * current state has been modified and so UI needs to updated.
  */
-public class CaptorMonitor implements SubjectMonitor {
+public class CaptorMonitor implements SubjectMonitor, CaptorOriginator {
 	
 	/**
 	 * The current diffusion used to diffuse the captor state to canals
@@ -34,8 +36,8 @@ public class CaptorMonitor implements SubjectMonitor {
 	 * Initialize current state to 0 and create an observers empty list 
 	 */
 	public CaptorMonitor() {
-		this.state = 0;
 		this.observers = new ArrayList<>();
+		this.state = 0;
 	}
 
 	/**
@@ -51,15 +53,16 @@ public class CaptorMonitor implements SubjectMonitor {
 	 * @param obs : obs reference asking for the value
 	 * @return the state according to the current diffusion
 	 */
+	@Override
 	public synchronized Integer getValue() {
-		return diffusion.getValue();
+		return this.state;
 	}
 
 	/**
 	 * setValue updates the current state, notifies diffusion and also observers of the changing. 
 	 */
 	public synchronized void setValue() {
-		state++;
+		this.state++;
 		diffusion.execute(this);
 		notifyObs();
 	}
@@ -98,5 +101,15 @@ public class CaptorMonitor implements SubjectMonitor {
 	public void notifyObs() {
 		for(ObsMonitor o : observers)
 			o.update(this);
+	}
+
+	@Override
+	public CaptorState createMemento() {
+		return new CaptorState(this.state);
+	}
+
+	@Override
+	public void restoreMemento(CaptorState state) {
+		this.state = state.getState();
 	}
 }

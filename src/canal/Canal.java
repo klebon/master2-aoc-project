@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import callable.GetValue;
 import callable.Update;
 import canal.observer.CaptorAsync;
 import canal.observer.ObsCaptorAsync;
-import captor.CaptorMonitor;
+import captor.Captor;
+import captor.impl.CaptorMonitor;
 import client.observer.ObsCaptor;
 import diffusion.Diffusion;
 import scheduler.SchedulerMonitor;
@@ -22,9 +24,9 @@ import scheduler.SchedulerMonitor;
 public class Canal implements ObsCaptorAsync, CaptorAsync {
 	
 	/**
-	 * The captor monitor which contains the current state
+	 * The captor monitor which contains the state
 	 */
-	private CaptorMonitor captor;
+	private Captor captor;
 	
 	/**
 	 * List of observers
@@ -51,18 +53,21 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	 * update creates the update callable and call on scheduler scheduleUpdate to return a future to caller
 	 */
 	@Override
-	public Future<Object> update(CaptorMonitor c) {
-		Callable<Object> update = new Update(this);
-		return scheduler.scheduleUpdate(update, 500L * (long) Math.random() + 500L, TimeUnit.MILLISECONDS);
+	public synchronized Future<Void> update(Captor c) {
+		this.captor = c;
+		Callable<Void> update = new Update(this);
+		Long value = (long) (1000 * ThreadLocalRandom.current().nextDouble(0, 1) + 1);
+		System.out.println("Valeur : " + value);
+		return scheduler.scheduleUpdate(update, value, TimeUnit.MILLISECONDS);
 	}
 
 	/**
 	 * getValue creates the getValue callable and call on scheduler scheduleUpdate to return a future to caller
 	 */
 	@Override
-	public Future<Integer> getValue() {
+	public synchronized Future<Integer> getValue() {
 		Callable<Integer> gv = new GetValue(captor);
-		return scheduler.scheduleGetValue(gv, 500L * (long) Math.random() + 500L, TimeUnit.MILLISECONDS);
+		return scheduler.scheduleGetValue(gv, 200L, TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -94,8 +99,6 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	 * Useless in our case because we use a custom update returning a Future.
 	 */
 	@Override
-	public void update(Diffusion subject) {
-	
-	}
+	public void update(Diffusion subject) {}
 
 }

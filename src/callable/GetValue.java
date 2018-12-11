@@ -2,7 +2,7 @@ package callable;
 
 import java.util.concurrent.Callable;
 
-import captor.CaptorMonitor;
+import captor.Captor;
 
 /**
  * GetValue is a callable used by Display in order to get the new state of CaptorMonitor.
@@ -13,13 +13,13 @@ public class GetValue implements Callable<Integer> {
 	/**
 	 * the captor monitor which contains the state that we are looking for
 	 */
-	private CaptorMonitor c;
+	private Captor c;
 	
 	/**
 	 * A simple constructor mapping the references to attributes.
 	 * @param c
 	 */
-	public GetValue(CaptorMonitor c) {
+	public GetValue(Captor c) {
 		this.c = c;
 	}
 

@@ -1,13 +1,13 @@
 package main;
 
 import canal.Canal;
-import captor.CaptorMonitor;
-import captor.CaptorThread;
+import captor.impl.CaptorMonitor;
+import captor.impl.CaptorThread;
 import client.DisplayMonitor;
-import client.DisplayThread;
 import diffusion.AtomicDiffusion;
 import diffusion.Diffusion;
 import diffusion.SequentialDiffusion;
+import diffusion.VersionDiffusion;
 import ihm.ValueUI;
 import scheduler.SchedulerMonitor;
 
@@ -35,15 +35,20 @@ public class Main {
 		// We can instantiate the diffusion now
 		Diffusion sequentialD = new SequentialDiffusion();
 		Diffusion atomicD = new AtomicDiffusion();
+		Diffusion versionD = new VersionDiffusion();
 		
-		sequentialD.attach(c1); atomicD.attach(c1);
-		sequentialD.attach(c2); atomicD.attach(c2);
-		sequentialD.attach(c3); atomicD.attach(c3);
-		sequentialD.attach(c4); atomicD.attach(c4);
+		sequentialD.attach(c1); atomicD.attach(c1); versionD.attach(c1);
+		sequentialD.attach(c2); atomicD.attach(c2); versionD.attach(c2);
+		sequentialD.attach(c3); atomicD.attach(c3); versionD.attach(c3);
+		sequentialD.attach(c4); atomicD.attach(c4); versionD.attach(c4);
+		
+		
 		if(args[0].equals("Atomique")) {
 			c.setDiffusion(atomicD);
-		} else {
+		} else if(args[0].equals("Séquentielle")) {
 			c.setDiffusion(sequentialD);
+		} else if(args[0].equals("Version")){
+			c.setDiffusion(versionD);
 		}
 		
 		
@@ -62,26 +67,15 @@ public class Main {
 		
 		// Manage threads
 		CaptorThread captorthread = new CaptorThread(c);
-		DisplayThread displayThread1 = new DisplayThread(a1);
+		/*DisplayThread displayThread1 = new DisplayThread(a1);
 		DisplayThread displayThread2 = new DisplayThread(a2);
 		DisplayThread displayThread3 = new DisplayThread(a3);
-		DisplayThread displayThread4 = new DisplayThread(a4);
+		DisplayThread displayThread4 = new DisplayThread(a4);*/
 		
+		// All behavior threads are daemon to close them when the main thread is closed
 		captorthread.setDaemon(true);
 		captorthread.start();
-	
-		displayThread1.setDaemon(true);
-		displayThread1.start();
-		
-		displayThread2.setDaemon(true);
-		displayThread2.start();
-		
-		displayThread3.setDaemon(true);
-		displayThread3.start();
-		
-		displayThread4.setDaemon(true);
-		displayThread4.start();
-	
 	}
+	
 
 }

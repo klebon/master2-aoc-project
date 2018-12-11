@@ -1,4 +1,4 @@
-package captor;
+package captor.impl;
 
 /**
  * CaptorThread is the captor's behavior. It inherits from Thread because it will update the captor state 
@@ -28,7 +28,7 @@ public class CaptorThread extends Thread {
 		while(true) {
 			c.setValue();
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

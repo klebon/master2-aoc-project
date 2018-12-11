@@ -9,7 +9,7 @@ import canal.observer.CaptorAsync;
  * So it inherits from Callable and returns an Object because the returning value is not interesting at 
  * all in this case of use.
  */
-public class Update implements Callable<Object> {
+public class Update implements Callable<Void> {
 
 	/**
 	 * CaptorAsync which will be noticed about the captor monitor update
@@ -24,12 +24,13 @@ public class Update implements Callable<Object> {
 		this.proxy = proxy;
 	}
 	
+	
 	/**
 	 * call is a method inherited which will be called by the scheduler. 
 	 * It will notify observers of proxy that CaptorMonitor updated.
 	 */
 	@Override
-	public Object call() throws Exception {
+	public Void call() throws Exception {
 		proxy.notifyObs();
 		return null;
 	}

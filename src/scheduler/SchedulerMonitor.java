@@ -20,7 +20,7 @@ public class SchedulerMonitor {
 	 * Creates the scheduler
 	 */
 	public SchedulerMonitor() {
-		this.scheduler = Executors.newScheduledThreadPool(1);
+		this.scheduler = Executors.newScheduledThreadPool(Integer.MAX_VALUE);
 	}
 	
 	/**
@@ -41,7 +41,7 @@ public class SchedulerMonitor {
 	 * @param time
 	 * @return 
 	 */
-	public synchronized Future<Object> scheduleUpdate(Callable<Object> c, Long delay, TimeUnit time) {
+	public synchronized Future<Void> scheduleUpdate(Callable<Void> c, Long delay, TimeUnit time) {
 		return scheduler.schedule(c, delay, time);
 	}
 
