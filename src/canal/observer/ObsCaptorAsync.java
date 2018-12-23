@@ -2,7 +2,7 @@ package canal.observer;
 
 import java.util.concurrent.Future;
 
-import captor.Captor;
+import captor.memento.CaptorState;
 import diffusion.Diffusion;
 import observer.Observer;
 
@@ -15,6 +15,6 @@ public interface ObsCaptorAsync extends Observer<Diffusion> {
 	 * update will create the callable and returns its result as Future thank to scheduler.
 	 * @return a Future without result
 	 */
-	public Future<Void> update(Captor c);
+	public Future<Void> update(CaptorState c);
 
 }

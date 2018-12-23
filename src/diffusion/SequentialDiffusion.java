@@ -11,55 +11,53 @@ import captor.memento.CaptorOriginator;
 import captor.memento.CaptorState;
 
 /**
- * SequentialDiffusion sends one state captor only when all displays have received the last one. 
- * The result is a sublist of captor states. It inherits from Diffusion for the Strategy pattern. 
- * CaptorMonitor calls whatever the diffusion execute method to update UI.
+ * SequentialDiffusion call update on all mObservers only when all of them have received the last one. 
+ * The result is a sublist of captor states shown on UI. 
+ * It inherits from Diffusion for the Strategy pattern. 
  */
 public class SequentialDiffusion implements Diffusion {
 
 	/**
-	 * lock is a boolean value used to enable or disable the process to send update to observers.
+	 * mLock is a boolean value used to enable or disable the process to call update on mObservers.
 	 */
-	private boolean lock;
+	private boolean mLock = false;
 	
 	/**
-	 * observers is a list of ObsCaptorAsync through AtomicDiffusion send update callables.
+	 * mObservers is a list of ObsCaptorAsync
 	 */
-	private List<ObsCaptorAsync> observers;
-	
-	private int count;
+	private List<ObsCaptorAsync> mObservers = new ArrayList<>();
 	
 	/**
-	 * SequentialDiffusion only needs to know all observers in order to send update callables.
-	 * Alternatively, it initializes all values such as lock to false or currentState to 0.
-	 * @param observers : list of observers connected to displays
+	 * Number of observers that have successfully received the update notification
 	 */
-	public SequentialDiffusion() {
-		this.lock = false;
-		this.observers = new ArrayList<>();
-	}
+	private int mCount;
+	
 	
 	/**
-	 * execute is called each time CaptorMonitor updates its state. According to the diffusion,
-	 * it saves or not the new state of captorMonitor and notify or not displays of the new value.
-	 * @param c : c is the ref of captor monitor which has updated its state 
+	 * execute is called each time CaptorMonitor updates its state. 
+	 * It will 
+	 * @param originator : originator is the reference of captor monitor which has updated its state 
 	 */
 	@Override
 	public synchronized void execute(CaptorOriginator originator) {
-		// One canal is associated to one ObsCaptor so if both are equal it means that each ObsCaptor has received
-		// the current value so we can clear the Set
-		if(count == observers.size()) {
-			lock = false;
+		// If the number of success receptions is equals to our observer list size
+		// It means that we can again call update on them
+		if(mCount == mObservers.size()) {
+			mLock = false;
 		}
-		// In order to set a new value and call update to each Canal again
-		if(!lock) {
-			lock = true;
-			count = 0;
+		
+		// If we can call update
+		if(!mLock) {
+			// We can not call update anymore until all observers received the update notification
+			mLock = true;
+			// And we reset the number of observers that have successfully received the update notification
+			mCount = 0;
+	
 			CaptorState state = originator.createMemento();
-			for(ObsCaptorAsync o : observers) {
-				CaptorOriginator captor = new CaptorMonitor();
-				captor.restoreMemento(state);
-				Future<Void> f = o.update(captor);
+			for(ObsCaptorAsync o : mObservers) {
+				Future<Void> f = o.update(state);
+				// Anonymous thread class that only call the blocking function get on the future and udpate mCount
+				// once the observer have successfully received the update notification
 				Thread t = new Thread() {
 				    public void run() {
 				    	try {
@@ -69,7 +67,7 @@ public class SequentialDiffusion implements Diffusion {
 						} catch (ExecutionException e) {
 							e.printStackTrace();
 						}
-				    	count++;
+				    	mCount++;
 				    }
 				};
 				t.start();
@@ -78,22 +76,24 @@ public class SequentialDiffusion implements Diffusion {
 	}
 
 	/**
-	 * getValue returns the available state according to the diffusion.
-	 * It also keeps a track on obs in order to know if all ObsCapteurs have received the available state.
-	 * @param obs : obs asking for the available state.
-	 * @return currentState
+	 * Add observer to our observer list
 	 */
-
 	@Override
 	public void attach(ObsCaptorAsync o) {
-		this.observers.add(o);
+		this.mObservers.add(o);
 	}
 
+	/**
+	 * Remove observer to our observer list
+	 */
 	@Override
 	public void detach(ObsCaptorAsync o) {
-		this.observers.remove(o);
+		this.mObservers.remove(o);
 	}
 
+	/**
+	 * Useless in our case of use. We notify all observers in the execute method.
+	 */
 	@Override
 	public void notifyObs() {}
 

@@ -11,63 +11,61 @@ import callable.GetValue;
 import callable.Update;
 import canal.observer.CaptorAsync;
 import canal.observer.ObsCaptorAsync;
-import captor.Captor;
 import captor.impl.CaptorMonitor;
+import captor.memento.CaptorState;
 import client.observer.ObsCaptor;
 import diffusion.Diffusion;
 import scheduler.SchedulerMonitor;
 
 /**
- * Canal is implementing all proxy interfaces. It is managing all interactions with the scheduler and the creation
+ * Canal is implementing all proxy interfaces. It is managing all interactions with the mScheduler and the creation
  * of callables. 
  */
 public class Canal implements ObsCaptorAsync, CaptorAsync {
 	
 	/**
-	 * The captor monitor which contains the state
+	 * The CaptorState which contains the mCaptorState
 	 */
-	private Captor captor;
+	private CaptorState mCaptorState;
 	
 	/**
 	 * List of observers
 	 */
-	private List<ObsCaptor> observers;
+	private List<ObsCaptor> mObservers;
 	
 	/**
 	 * Scheduler which will manage callables that the canal creates.
 	 */
-	private SchedulerMonitor scheduler;
+	private SchedulerMonitor mScheduler;
 	
 	/**
 	 * Simple constructor mapping the references to attributes.
-	 * @param captor
-	 * @param scheduler
+	 * @param mScheduler
 	 */
-	public Canal(CaptorMonitor captor, SchedulerMonitor scheduler) {
-		this.captor = captor;
-		this.scheduler = scheduler;
-		this.observers = new ArrayList<>();
+	public Canal(SchedulerMonitor scheduler) {
+		this.mScheduler = scheduler;
+		this.mObservers = new ArrayList<>();
 	}
 
 	/**
-	 * update creates the update callable and call on scheduler scheduleUpdate to return a future to caller
+	 * update creates the update callable and call scheduleUpdate to return a future to caller.
+	 * It also keeps a reference on the state in order to return it when observers will ask for the state.
 	 */
 	@Override
-	public synchronized Future<Void> update(Captor c) {
-		this.captor = c;
+	public synchronized Future<Void> update(CaptorState c) {
+		this.mCaptorState = c;
 		Callable<Void> update = new Update(this);
 		Long value = (long) (1000 * ThreadLocalRandom.current().nextDouble(0, 1) + 1);
-		System.out.println("Valeur : " + value);
-		return scheduler.scheduleUpdate(update, value, TimeUnit.MILLISECONDS);
+		return mScheduler.scheduleUpdate(update, value, TimeUnit.MILLISECONDS);
 	}
 
 	/**
-	 * getValue creates the getValue callable and call on scheduler scheduleUpdate to return a future to caller
+	 * getValue creates the getValue callable and call scheduleUpdate to return a future to caller
 	 */
 	@Override
 	public synchronized Future<Integer> getValue() {
-		Callable<Integer> gv = new GetValue(captor);
-		return scheduler.scheduleGetValue(gv, 200L, TimeUnit.MILLISECONDS);
+		Callable<Integer> gv = new GetValue(mCaptorState);
+		return mScheduler.scheduleGetValue(gv, 200L, TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -75,7 +73,7 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	 */
 	@Override
 	public void attach(ObsCaptor o) {
-		this.observers.add(o);
+		this.mObservers.add(o);
 	}
 
 	/**
@@ -83,15 +81,15 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	 */
 	@Override
 	public void detach(ObsCaptor o) {
-		this.observers.remove(o);
+		this.mObservers.remove(o);
 	}
 
 	/**
-	 * Notify all observers
+	 * Notify all mObservers
 	 */
 	@Override
 	public void notifyObs() {
-		for(ObsCaptor o : observers)
+		for(ObsCaptor o : mObservers)
 			o.update(this);
 	}
 

@@ -1,8 +1,9 @@
 package captor.memento;
 
-import captor.Captor;
-
-public interface CaptorOriginator extends Captor {
+/**
+ * CaptorOriginator is the Originator interface of the Memento Pattern.
+ */
+public interface CaptorOriginator {
 
 	public CaptorState createMemento();
 	public void restoreMemento(CaptorState state);

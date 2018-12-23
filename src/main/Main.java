@@ -25,14 +25,12 @@ public class Main {
 		DisplayMonitor a4 = new DisplayMonitor();
 
 		// Now the canal
-		Canal c1 = new Canal(c, scheduler); c1.attach(a1);
-		Canal c2 = new Canal(c, scheduler); c2.attach(a2);
-		Canal c3 = new Canal(c, scheduler); c3.attach(a3);
-		Canal c4 = new Canal(c, scheduler); c4.attach(a4);
-		
-		// Then add it to our list
-		
-		// We can instantiate the diffusion now
+		Canal c1 = new Canal(scheduler); c1.attach(a1);
+		Canal c2 = new Canal(scheduler); c2.attach(a2);
+		Canal c3 = new Canal(scheduler); c3.attach(a3);
+		Canal c4 = new Canal(scheduler); c4.attach(a4);
+				
+		// We can instantiate diffusions now
 		Diffusion sequentialD = new SequentialDiffusion();
 		Diffusion atomicD = new AtomicDiffusion();
 		Diffusion versionD = new VersionDiffusion();
@@ -42,7 +40,6 @@ public class Main {
 		sequentialD.attach(c3); atomicD.attach(c3); versionD.attach(c3);
 		sequentialD.attach(c4); atomicD.attach(c4); versionD.attach(c4);
 		
-		
 		if(args[0].equals("Atomique")) {
 			c.setDiffusion(atomicD);
 		} else if(args[0].equals("Séquentielle")) {
@@ -50,7 +47,6 @@ public class Main {
 		} else if(args[0].equals("Version")){
 			c.setDiffusion(versionD);
 		}
-		
 		
 		// UI
 		ValueUI captorUI = new ValueUI("CaptorMonitor");
@@ -65,12 +61,8 @@ public class Main {
 		a3.attach(display3); display3.showView();
 		a4.attach(display4); display4.showView();
 		
-		// Manage threads
+		// Manage thread
 		CaptorThread captorthread = new CaptorThread(c);
-		/*DisplayThread displayThread1 = new DisplayThread(a1);
-		DisplayThread displayThread2 = new DisplayThread(a2);
-		DisplayThread displayThread3 = new DisplayThread(a3);
-		DisplayThread displayThread4 = new DisplayThread(a4);*/
 		
 		// All behavior threads are daemon to close them when the main thread is closed
 		captorthread.setDaemon(true);

@@ -2,21 +2,21 @@ package captor.impl;
 
 /**
  * CaptorThread is the captor's behavior. It inherits from Thread because it will update the captor state 
- * independently the main thread such as a real captor measuring new value each second.
+ * independently the main thread such as a real captor measuring new value each second's half.
  */
 public class CaptorThread extends Thread {
 	
 	/**
-	 * CaptorMonitor is the current state of the captor 
+	 * CaptorMonitor is the object encapsulating the state of the captor 
 	 */
-	private CaptorMonitor c;
+	private CaptorMonitor mCaptorMonitor;
 	
 	/**
 	 * CaptorThread needs a CaptorMonitor in order to update its state.
 	 * @param c
 	 */
 	public CaptorThread(CaptorMonitor c) {
-		this.c = c;
+		this.mCaptorMonitor = c;
 	}
 
 	/**
@@ -26,7 +26,7 @@ public class CaptorThread extends Thread {
 	@Override
 	public void run() {
 		while(true) {
-			c.setValue();
+			mCaptorMonitor.setValue();
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {

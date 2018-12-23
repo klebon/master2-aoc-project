@@ -21,51 +21,63 @@ import ihm.observer.SubjectMonitor;
 public class DisplayMonitor implements ObsCaptor, SubjectMonitor {
 	
 	/**
-	 * List of ObsMonitor observers that show the current value of the DisplayMonitor
+	 * List of ObsMonitor observers that show the current mValue of the DisplayMonitor
 	 */
-	private List<ObsMonitor> observers = new ArrayList<>();
+	private List<ObsMonitor> mObservers = new ArrayList<>();
 	
 	/**
 	 * The current value of DisplayMonitor
 	 */
-	private Integer value;
-
+	private Integer mValue;
 
 	/**
-	 * Set a new value to our DisplayMonitor and notify all observers that its state changed
-	 * @param i 
+	 * Add an ObsMonitor to mObservers list
 	 */
-
 	@Override
 	public synchronized void attach(ObsMonitor o) {
-		this.observers.add(o);
+		this.mObservers.add(o);
 	}
 
+	/**
+	 * Remove an ObsMonitor to mObservers list
+	 */
 	@Override
 	public synchronized void detach(ObsMonitor o) {
-		this.observers.remove(o);
+		this.mObservers.remove(o);
 	}
 	
+	/**
+	 * Notify all observers
+	 */
 	@Override
 	public synchronized void notifyObs() {
-		for(ObsMonitor o : observers)
+		for(ObsMonitor o : mObservers)
 			o.update(this);
 	}
 	
+
+	/**
+	 * Notify DisplayMonitor that a new value was released. DisplayMonitor uses CaptorAsync proxy to get this new value.
+	 * It is waiting until the future gets the new value and it will notify all observers that its state changed
+	 * @param subject is the proxy 
+	 */
 	@Override
 	public synchronized void update(CaptorAsync subject) {
 		Future<Integer> f = subject.getValue();
 		try {
-			this.value = f.get();
+			this.mValue = f.get();
 			notifyObs();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Returns the current state of DisplayMonitor
+	 */
 	@Override
 	public synchronized Integer getState() {
-		return this.value;
+		return this.mValue;
 	}
 	
 }

@@ -14,24 +14,24 @@ public class Update implements Callable<Void> {
 	/**
 	 * CaptorAsync which will be noticed about the captor monitor update
 	 */
-	private CaptorAsync proxy;
+	private CaptorAsync mCaptorAsync;
 	
 	/**
 	 * A simple constructor mapping the reference to attribute.
-	 * @param proxy
+	 * @param mCaptorAsync
 	 */
 	public Update(CaptorAsync proxy) {
-		this.proxy = proxy;
+		this.mCaptorAsync = proxy;
 	}
 	
 	
 	/**
 	 * call is a method inherited which will be called by the scheduler. 
-	 * It will notify observers of proxy that CaptorMonitor updated.
+	 * It will notify observers of mCaptorAsync that CaptorMonitor updated.
 	 */
 	@Override
 	public Void call() throws Exception {
-		proxy.notifyObs();
+		mCaptorAsync.notifyObs();
 		return null;
 	}
 
