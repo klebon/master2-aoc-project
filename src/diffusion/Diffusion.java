@@ -11,6 +11,7 @@ public interface Diffusion extends Subject<ObsCaptorAsync> {
 	
 	/**
 	 * execute is called everytime the captor monitor is updated.
+	 * @param originator is the CaptorMonitor encapsulating its state
 	 */
 	public void execute(CaptorOriginator originator);
 	

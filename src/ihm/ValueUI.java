@@ -45,7 +45,7 @@ public class ValueUI extends JFrame implements ObsMonitor {
 
 	/**
 	 * Update the showing value of the IHM according to the state of subject
-	 * @param subject
+	 * @param subject is the reference of the subject that we are observing
 	 */
 	@Override
 	public void update(SubjectMonitor subject) {

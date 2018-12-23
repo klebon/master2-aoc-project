@@ -40,7 +40,7 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	
 	/**
 	 * Simple constructor mapping the references to attributes.
-	 * @param mScheduler
+	 * @param scheduler is the monitor of SchedulerExecutorService
 	 */
 	public Canal(SchedulerMonitor scheduler) {
 		this.mScheduler = scheduler;

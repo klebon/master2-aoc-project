@@ -17,7 +17,7 @@ public class GetValue implements Callable<Integer> {
 	
 	/**
 	 * A simple constructor mapping the references to attributes.
-	 * @param captorState
+	 * @param captorState that will be mapped
 	 */
 	public GetValue(CaptorState captorState) {
 		this.mCaptorState = captorState;

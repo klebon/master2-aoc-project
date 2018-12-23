@@ -59,6 +59,7 @@ public class ParameterUI extends JFrame implements ActionListener {
 	
 	/**
 	 * Main
+	 * @param args is not used in this case of use
 	 */
 	public static void main(String[] args) {
 		ParameterUI parameter = new ParameterUI();

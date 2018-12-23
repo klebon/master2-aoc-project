@@ -25,10 +25,10 @@ public class SchedulerMonitor {
 	
 	/**
 	 * scheduleGetValue is like schedule method of ScheduledExecutorService but it is synchronized
-	 * @param c
-	 * @param delay
-	 * @param time
-	 * @return 
+	 * @param c is the callable
+	 * @param delay is the lapse of time in long 
+	 * @param time is the unit of time
+	 * @return a future
 	 */
 	public synchronized Future<Integer> scheduleGetValue(Callable<Integer> c, Long delay, TimeUnit time) {
 		return scheduler.schedule(c, delay, time);
@@ -36,10 +36,10 @@ public class SchedulerMonitor {
 	
 	/**
 	 * scheduleGetValue is like schedule method of ScheduledExecutorService but it is synchronized
-	 * @param c
-	 * @param delay
-	 * @param time
-	 * @return 
+	 * @param c is the callable
+	 * @param delay is the lapse of time in long
+	 * @param time is the unit of time
+	 * @return a future
 	 */
 	public synchronized Future<Void> scheduleUpdate(Callable<Void> c, Long delay, TimeUnit time) {
 		return scheduler.schedule(c, delay, time);

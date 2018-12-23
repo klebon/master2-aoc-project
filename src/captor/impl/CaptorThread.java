@@ -13,7 +13,7 @@ public class CaptorThread extends Thread {
 	
 	/**
 	 * CaptorThread needs a CaptorMonitor in order to update its state.
-	 * @param c
+	 * @param c that will be mapped
 	 */
 	public CaptorThread(CaptorMonitor c) {
 		this.mCaptorMonitor = c;

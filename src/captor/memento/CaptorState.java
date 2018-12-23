@@ -13,7 +13,7 @@ public class CaptorState {
 	
 	/**
 	 * A simple constructor making a copy of the Originator State
-	 * @param state
+	 * @param state is the state of Originator that will be copied
 	 */
 	public CaptorState(Integer state) {
 		this.mState = new Integer(state);

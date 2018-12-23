@@ -18,7 +18,7 @@ public class Update implements Callable<Void> {
 	
 	/**
 	 * A simple constructor mapping the reference to attribute.
-	 * @param mCaptorAsync
+	 * @param proxy that will be mapped
 	 */
 	public Update(CaptorAsync proxy) {
 		this.mCaptorAsync = proxy;

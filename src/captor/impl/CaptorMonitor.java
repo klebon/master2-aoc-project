@@ -42,7 +42,7 @@ public class CaptorMonitor implements SubjectMonitor, CaptorOriginator {
 
 	/**
 	 * setDiffusion replaces the current mDiffusion to diffusion. 
-	 * @param mDiffusion
+	 * @param diffusion that will replace the current diffusion
 	 */
 	public synchronized void setDiffusion(Diffusion diffusion) {
 		this.mDiffusion = diffusion;
