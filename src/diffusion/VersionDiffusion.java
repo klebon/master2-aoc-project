@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import canal.observer.ObsCaptorAsync;
-import captor.impl.CaptorMonitor;
 import captor.memento.CaptorOriginator;
 import captor.memento.CaptorState;
 

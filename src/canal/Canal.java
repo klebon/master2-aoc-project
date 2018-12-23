@@ -11,7 +11,6 @@ import callable.GetValue;
 import callable.Update;
 import canal.observer.CaptorAsync;
 import canal.observer.ObsCaptorAsync;
-import captor.impl.CaptorMonitor;
 import captor.memento.CaptorState;
 import client.observer.ObsCaptor;
 import diffusion.Diffusion;

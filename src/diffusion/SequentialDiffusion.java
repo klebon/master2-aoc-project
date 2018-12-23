@@ -6,7 +6,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import canal.observer.ObsCaptorAsync;
-import captor.impl.CaptorMonitor;
 import captor.memento.CaptorOriginator;
 import captor.memento.CaptorState;
 
