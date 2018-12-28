@@ -54,7 +54,7 @@ public class Canal implements ObsCaptorAsync, CaptorAsync {
 	public synchronized Future<Void> update(CaptorState c) {
 		this.mCaptorState = c;
 		Callable<Void> update = new Update(this);
-		Long value = (long) (1000 * ThreadLocalRandom.current().nextDouble(0, 1) + 1);
+		Long value = (long) (1000 * (ThreadLocalRandom.current().nextDouble(0, 4) + 0.1));
 		return mScheduler.scheduleUpdate(update, value, TimeUnit.MILLISECONDS);
 	}
 
