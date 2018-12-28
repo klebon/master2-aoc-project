@@ -23,28 +23,33 @@ Le projet a été développé en Java et pour l'affichage de fenêtres en Swing.
 
 ### Active Object
 Le patron Active Object est au coeur de notre application car c'est ce qui était attendu dans le rendu. Son rôle est de découpler l'exécution des méthodes de leurs invocations pour permettre la concurrence et l'invocation de méthodes de manière asynchrone. Dans ce contexte, nous retrouvons donc notre capteur qui génère les valeurs associé à une diffusion. Cette diffusion interagit avec les canaux qui se chargent de notifier puis transmettre la valeur aux afficheurs. Cette transmission est directement liée à un Scheduler pour le découplage de l'invocation et de l'exécution. Une fois que les afficheurs ont bien reçu la notification qu'une nouvelle valeur a été produite, ils demandent aux canaux la valeur du capteur et s'ensuit un fonctionnement similaire à la notification. Un diagramme de classe simpliste de tout ceci nous donne :
+
 ![Active Object simple](image/active_object_simple.png "Active Object simple")
 
 
 ### Proxy
 Le patron Active Object implique l'utilisation d'un proxy entre le client et le servant qui permet de s'abstraire de la création des fonctions ainsi que des interactions avec le scheduler. Il faut savoir aussi que notre système fonctionne dans un sens comme dans l'autre, donc le servant lors de la notification devient le client dans la récupération de la valeur. Nous avons donc deux proxy, un pour chaque client. Les prendre en compte nous donne ceci :
+
 ![Active Object et Proxy](image/active_object_proxy.png "Active Object et proxy")
 
 
 ### Strategy
 En parallèle de l'Active Object, nous souhaitons pouvoir changer d'algorithmes lors de la diffusion des valeurs. Nous voulons une diffusion atomique, une diffusion séquentielle et une diffusion par époque. Le patron qui convient est le patron Strategy. Il permet de faire abstraction côté client du type de l'algorithme tout en permettant à l'algorithme d'adapter son exécution selon le client grâce à la méthode configure. Dans notre cas, nous allons juste utiliser la méthode execute. Active Object utilise un patron similaire pour les fonctions à invoquer, quelque chose qui se rapproche du patron Command. Dans notre cas, toutes nos fonctions découlent de l'interface Callable. Les ajouter au diagramme nous donne ceci : 
+
 ![Active Object, Proxy et Strategy](image/active_object_proxy_strategy.png "Active Object, proxy et strategy")
 
 
 ### Observer
 Les interactions entre objets dans notre Active Object se fait via le patron Observer pour permettre une grande flexibilité et pouvoir dynamiquement ajouter de nouveaux afficheurs ou en enlever. Nous avons décidé pour ce faire de créer deux templates, un pour Observer et un pour Subject pour jouer avec la généricité de Java et garder un lien de parenté entre tous les observers et les sujets tout en adaptant les types qu'ils observent, qu'ils renvoient etc.
 Si on ajoute toutes nos interfaces, cela nous donne ceci :
+
 ![Active Object, Proxy, Strategy et Observer](image/active_object_proxy_strategy_observer.png "Active Object, proxy, strategy et observer")
 
 Pour plus de lisibilité, nous enlèverons par la suite le lien d'héritage entre les interfaces et les templates Observer et Subject.
 
 ### Memento
 Jusqu'à l'algorithme de diffusion par période, nous fonctionnions bien sans le patron Memento. Mais l'algorithme par période n'impose aucune synchronisation côté afficheur et permet de recevoir des valeurs antérieures à la valeur courante du capteur. Ceci implique que simplement demander la dernière valeur au capteur ne permet plus de satisfaire tous les algorithmes de diffusion. L'idée a donc été d'utiliser le patron Memento pour préserver ces états dans un objet que la diffusion transmet au proxy qui se charge de mettre le memento dans la fonction d'appel GetValue. L'ajout de ce patron nous donne ceci :
+
 ![Active Object, Proxy, Strategy, Observer et Memento](image/active_object_proxy_strategy_observer_memento.png "Active Object, proxy, strategy, observer et memento")
 
 ### Choix personnels de conception
@@ -59,13 +64,19 @@ L'exécution du programme nous mène à cette simple fenêtre. Elle permet de ch
 Ensuite, une fois que nous avons choisi l'algorithme, le bouton Start va exécuter le programme et créer 4 afficheurs et un capteur au même endroit. Il suffit de les glisser les uns à côté des autres. Pour les tests des algorithmes, ils ont été fait selon notre appréciation à défaut de pouvoir écrire des tests. Nous avons pris un screenshot par algorithme qui montre un état que les autres algorithmes ne peuvent avoir (hormis par époque qui peut finalement adopter tous les états avec le hasard). 
 
 Atomique :
+
 ![alt text](image/atomic.png "Diffusion atomique en image")
+
 Nous voyons bien sur l'image que l'ensemble des fenêtres des afficheurs est synchronisé avec la fenêtre du capteur.
 
 Séquentiel :
+
 ![alt text](image/sequential.png "Diffusion séquentielle en image")
+
 Nous voyons bien sur l'image que l'ensemble des fenêtres des afficheurs restent synchronisées entre elles mais ne sont plus désormais synchronisées avec le capteur qui continue de générer des valeurs.
 
 Par époque :
+
 ![alt text](image/version.png "Diffusion par époque en image")
+
 Nous voyons bien sur l'image qu'il n'existe plus aucune synchronisation entre les fenêtres des afficheurs ni même avec le capteur. 
