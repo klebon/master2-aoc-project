@@ -73,7 +73,7 @@ Séquentiel :
 
 ![alt text](image/sequential.png "Diffusion séquentielle en image")
 
-Nous voyons bien sur l'image que l'ensemble des fenêtres des afficheurs restent synchronisées entre elles mais ne sont plus désormais synchronisées avec le capteur qui continue de générer des valeurs.
+Nous voyons bien sur l'image que les fenêtres des afficheurs restent synchronisées entre elles mais ne sont plus désormais synchronisées avec le capteur qui continue de générer des valeurs.
 
 Par époque :
 
